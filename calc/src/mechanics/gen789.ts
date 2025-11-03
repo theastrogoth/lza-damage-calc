@@ -1470,6 +1470,14 @@ export function calculateAtModsSMSSSV(
     desc.isSteelySpiritAttacker = true;
   }
 
+  if (
+    field.attackerSide.isCharged &&
+    move.hasType('Electric')
+  ) {
+    atMods.push!(8192);
+    desc.isCharged = true;
+  }
+
   if ((defender.hasAbility('Thick Fat') && move.hasType('Fire', 'Ice')) ||
       (defender.hasAbility('Water Bubble') && move.hasType('Fire')) ||
      (defender.hasAbility('Purifying Salt') && move.hasType('Ghost'))) {

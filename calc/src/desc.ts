@@ -1006,6 +1006,9 @@ function buildDescription(description: RawDesc, attacker: Pokemon, defender: Pok
   if (description.isSteelySpiritAttacker) {
     output += 'with an ally\'s Steely Spirit ';
   }
+  if (description.isCharged) {
+    output += 'charged ';
+  }
   if (description.isBattery) {
     output += 'Battery boosted ';
   }

@@ -1218,6 +1218,7 @@ function createField() {
 	var isPowerSpot = [$("#powerSpotL").prop("checked"), $("#powerSpotR").prop("checked")];
 	// TODO: support switching in as well!
 	var isSwitchingOut = [$("#switchingL").prop("checked"), $("#switchingR").prop("checked")];
+	var isCharged = [$("#chargedL").prop("checked"), $("#chargedR").prop("checked")];
 	var isRedItem = [$("#redItemL").prop("checked"), $("#redItemR").prop("checked")];
 	var isBlueItem = [$("#blueItemL").prop("checked"), $("#blueItemR").prop("checked")];
 
@@ -1246,6 +1247,7 @@ function createField() {
 			isBattery: isBattery[i],
 			isPowerSpot: isPowerSpot[i],
 			isSwitching: isSwitchingOut[i] ? 'out' : undefined,
+			isCharged: isCharged[i],
 			isRedItem: isRedItem[i],
 			isBlueItem: isBlueItem[i]
 		});
