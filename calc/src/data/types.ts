@@ -431,7 +431,9 @@ const SV: TypeChart = extend(true, {}, SS, {
   },
 });
 
-export const TYPE_CHART = [{}, RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV];
+const ZA = SV;
+
+export const TYPE_CHART = [{}, RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV, ZA]; // ZA will be accessed as 'gen 10' even though this isn't really accurate
 
 export class Types implements I.Types {
   private readonly gen: I.GenerationNum;

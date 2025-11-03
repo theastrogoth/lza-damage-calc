@@ -27,6 +27,7 @@ export namespace State {
   export interface Move {
     name: I.MoveName;
     useZ?: boolean;
+    usePlus?: boolean;
     useMax?: boolean;
     isCrit?: boolean;
     isStellarFirstUse?: boolean;
@@ -70,6 +71,7 @@ export namespace State {
     isForesight?: boolean;
     isTailwind?: boolean;
     isHelpingHand?: boolean;
+    isCharged?: boolean;
     isFlowerGift?: boolean;
     isPowerTrick?: boolean;
     isFriendGuard?: boolean;
@@ -78,5 +80,7 @@ export namespace State {
     isPowerSpot?: boolean;
     isSteelySpirit?: boolean;
     isSwitching?: 'out' | 'in';
+    isRedItem?: boolean;
+    isBlueItem?: boolean;
   }
 }

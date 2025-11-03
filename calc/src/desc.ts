@@ -36,6 +36,7 @@ export interface RawDesc {
   isSteelySpiritAttacker?: boolean;
   isFriendGuard?: boolean;
   isHelpingHand?: boolean;
+  isCharged?: boolean;
   isCritical?: boolean;
   isLightScreen?: boolean;
   isBurned?: boolean;
@@ -45,6 +46,7 @@ export interface RawDesc {
   isPowerSpot?: boolean;
   isWonderRoom?: boolean;
   isSwitching?: 'out' | 'in';
+  isPlus?: boolean;
   moveBP?: number;
   moveName: string;
   moveTurns?: string;
@@ -53,6 +55,8 @@ export interface RawDesc {
   terrain?: Terrain;
   weather?: Weather;
   isDefenderDynamaxed?: boolean;
+  isAtkItemBoosted?: boolean;
+  isDefItemBoosted?: boolean;
 }
 
 export function display(
@@ -1011,7 +1015,10 @@ function buildDescription(description: RawDesc, attacker: Pokemon, defender: Pok
   if (description.isSwitching) {
     output += 'switching boosted ';
   }
-  output += description.moveName + ' ';
+  if (description.isAtkItemBoosted) {
+    output += 'Red Item boosted ';
+  }
+  output += description.moveName + (description.isPlus ? '+' : '') + ' ';
   if (description.moveBP && description.moveType) {
     output += '(' + description.moveBP + ' BP ' + description.moveType + ') ';
   } else if (description.moveBP) {
@@ -1051,6 +1058,9 @@ function buildDescription(description: RawDesc, attacker: Pokemon, defender: Pok
   }
   if (description.defenderTera) {
     output += `Tera ${description.defenderTera} `;
+  }
+  if (description.isDefItemBoosted) {
+    output += 'Blue Item boosted ';
   }
   output += description.defenderName;
   if (description.weather && description.terrain) {
