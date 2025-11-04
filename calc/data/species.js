@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __generator = (this && this.__generator) || function (thisArg, body) {
     var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
     return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
@@ -10943,7 +10954,12 @@ var LUMIOSE_DEX = [
 ];
 var ZA = Object.keys(SV).reduce(function (obj, k) {
     if (LUMIOSE_DEX.includes(k)) {
-        obj[k] = SV[k];
+        if (k === 'Greninja') {
+            obj[k] = __assign(__assign({}, SV[k]), { otherFormes: ["Greninja-Mega"] });
+        }
+        else {
+            obj[k] = SV[k];
+        }
     }
     return obj;
 }, {});

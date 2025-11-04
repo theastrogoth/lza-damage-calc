@@ -39,7 +39,7 @@ function calculateSMSSSV(gen, attacker, defender, move, field) {
                     : 1;
         attacker.boosts.spa = Math.min(6, Math.max(-6, attacker.boosts.spa));
     }
-    move.usePlus = move.usePlus || attacker.name.includes('-Mega');
+    move.usePlus = move.usePlus;
     (0, util_2.computeFinalStats)(gen, attacker, defender, field, 'atk', 'spa');
     (0, util_2.checkInfiltrator)(attacker, field.defenderSide);
     (0, util_2.checkInfiltrator)(defender, field.attackerSide);
@@ -705,7 +705,7 @@ function calculateBasePowerSMSSSV(gen, attacker, defender, move, field, hasAteAb
             }
             break;
         case 'Water Shuriken':
-            basePower = attacker.named('Greninja-Ash') && attacker.hasAbility('Battle Bond') ? 20 : 15;
+            basePower = attacker.named('Greninja-Ash') && attacker.hasAbility('Battle Bond') ? 20 : move.bp;
             desc.moveBP = basePower;
             break;
         case 'Triple Axel':
