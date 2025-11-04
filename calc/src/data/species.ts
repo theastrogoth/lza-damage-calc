@@ -10450,16 +10450,6 @@ const ZA_PATCH: {[name: string]: DeepPartial<SpeciesData>} = {
     },
     baseSpecies: 'Meganium',
   },
-  'Mawile': {
-    bs: {
-      hp: 86,
-      at: 147,
-      df: 92,
-      sa: 129,
-      sd: 86,
-      sp: 126,
-    },
-  },
   'Mawile-Mega': {
     bs: {
       hp: 50,
