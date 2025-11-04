@@ -261,7 +261,7 @@ $(".ability").bind("keyup change", function () {
 		var move = moves[moveName] || moves['(No Move)'];
 		if (move.multiaccuracy) {
 			moveHits = move.multihit;
-		} else if (ability === 'Skill Link') {
+		} else if (gen === 10 || ability === 'Skill Link') {
 			moveHits = 5;
 		} else if ($(this).closest(".poke-info").find(".item").val() === 'Loaded Dice') {
 			moveHits = 4;
@@ -294,6 +294,64 @@ $(".ability").bind("keyup change", function () {
 
 	}
 });
+
+$(".move-plus").bind("keyup change", function () {
+	var moveGroupObj = $(this).parent();
+	var moveName = moveGroupObj.find(".select2-chosen").text();
+	var move = moves[moveName] || moves['(No Move)'];
+	var pokeInfo = $(this).closest(".poke-info");
+	var setName = pokeInfo.find("input.set-selector").val();
+	var pokeName;
+	if (typeof pokeInfo === "string") {
+		pokeName = pokeInfo.substring(0, pokeInfo.indexOf(" ("));		
+	} else {
+		if (setName.indexOf("(") === -1) {
+			pokeName = setName;
+		} else {
+			var pokemonName = setName.substring(0, setName.indexOf(" ("));
+			var species = pokedex[pokemonName];
+			pokeName = (species.otherFormes || (species.baseSpecies && species.baseSpecies !== pokemonName)) ? pokeInfo.find(".forme").val() : pokemonName;
+			pokeName = pokeName || pokemonName;
+		}
+	}
+	var isMega = (gen === 10 && pokeName.includes("-Mega"));
+	if (isMega) {
+		moveGroupObj.find("input.move-plus").prop("checked", true);
+	}
+	
+	var isWaterShuriken = moveName === "Water Shuriken";
+	var isPlus = moveGroupObj.find("input.move-plus").prop("checked") || isMega;
+	if (isWaterShuriken) {
+		moveGroupObj.children(".move-bp").val(isPlus ? 75 : 15);
+	}
+	if (Array.isArray(move.multihit) || (!isNaN(move.multihit) && move.multiaccuracy)) {
+		var maxHits = (isWaterShuriken && isPlus) ? 1 : (!isNaN(move.multihit) ? move.multihit : move.multihit[1]) + (isPlus ? 1 : 0)
+		moveGroupObj.children(".move-times").hide();
+		moveGroupObj.children(".move-times").val(1);
+		moveGroupObj.children(".move-hits").empty();
+		if (!isNaN(move.multihit)) {
+			for (var i = 1; i <= maxHits; i++) {
+				moveGroupObj.children(".move-hits").append("<option value=" + i + ">" + i + " hits</option>");
+			}
+		} else {
+			for (var i = 1; i <= maxHits; i++) {
+				moveGroupObj.children(".move-hits").append("<option value=" + i + ">" + i + " hits</option>");
+			}
+		}
+		moveGroupObj.children(".move-hits").show();
+		moveGroupObj.children(".move-hits").val(maxHits);
+	} else if (!isNaN(move.multihit)) {
+		moveGroupObj.children(".move-hits").val(1);
+		moveGroupObj.children(".move-hits").hide();
+		moveGroupObj.children(".move-times").val(1);
+		moveGroupObj.children(".move-times").hide();
+	} else {
+		moveGroupObj.children(".move-hits").val(1);
+		moveGroupObj.children(".move-hits").hide();
+		moveGroupObj.children(".move-times").show();
+	}
+});
+
 
 function autosetQP(pokemon) {
 	var currentWeather = $("input:radio[name='weather']:checked").val();
@@ -480,9 +538,9 @@ $(".move-selector").change(function () {
 	var moveGroupObj = $(this).parent();
 	moveGroupObj.children(".move-bp").val(moveName === 'Present' ? 40 : move.bp);
 	var m = moveName.match(HIDDEN_POWER_REGEX);
+	var pokeObj = $(this).closest(".poke-info");
+	var pokemon = createPokemon(pokeObj);
 	if (m) {
-		var pokeObj = $(this).closest(".poke-info");
-		var pokemon = createPokemon(pokeObj);
 		var actual = calc.Stats.getHiddenPower(GENERATION, pokemon.ivs);
 		if (actual.type !== m[1]) {
 			var hpIVs = calc.Stats.getHiddenPowerIVs(GENERATION, m[1]);
@@ -524,23 +582,31 @@ $(".move-selector").change(function () {
 	moveGroupObj.children(".move-crit").prop("checked", move.willCrit === true);
 
 	var stat = move.category === 'Special' ? 'spa' : 'atk';
+	
+	var pokeName = pokemon.name;
+	var isWaterShuriken = moveName === "Water Shuriken";
+	var isPlus = moveGroupObj.find("input.move-plus").prop("checked") || (gen === 10 && pokeName.includes("-Mega"));
+	if (isWaterShuriken) {
+		moveGroupObj.children(".move-bp").val(isPlus ? 75 : 15);
+	}
 	if (Array.isArray(move.multihit) || (!isNaN(move.multihit) && move.multiaccuracy)) {
+		var maxHits = (isWaterShuriken && isPlus) ? 1 : (!isNaN(move.multihit) ? move.multihit : move.multihit[1]) + (isPlus ? 1 : 0)
 		moveGroupObj.children(".move-times").hide();
 		moveGroupObj.children(".move-times").val(1);
 		moveGroupObj.children(".move-hits").empty();
 		if (!isNaN(move.multihit)) {
-			for (var i = 1; i <= move.multihit; i++) {
+			for (var i = 1; i <= maxHits; i++) {
 				moveGroupObj.children(".move-hits").append("<option value=" + i + ">" + i + " hits</option>");
 			}
 		} else {
-			for (var i = 1; i <= move.multihit[1]; i++) {
+			for (var i = 1; i <= maxHits; i++) {
 				moveGroupObj.children(".move-hits").append("<option value=" + i + ">" + i + " hits</option>");
 			}
 		}
 		moveGroupObj.children(".move-hits").show();
 		var pokemon = $(this).closest(".poke-info");
 
-		var moveHits = 3;
+		var moveHits = gen === 10 ? maxHits : 3;
 		if (move.multiaccuracy) {
 			moveHits = move.multihit;
 		} else if (pokemon.find('.ability').val() === 'Skill Link') {
@@ -561,7 +627,7 @@ $(".move-selector").change(function () {
 		moveGroupObj.children(".move-times").show();
 	}
 	moveGroupObj.children(".move-z").prop("checked", false);
-	moveGroupObj.children(".move-plus").prop("checked", false);
+	moveGroupObj.children(".move-plus").prop("checked", isPlus);
 });
 
 $(".item").change(function () {
@@ -920,7 +986,7 @@ $(".forme").change(function () {
 		fullSetName = container.find(".select2-chosen").first().text(),
 		pokemonName = fullSetName.substring(0, fullSetName.indexOf(" (")),
 		setName = fullSetName.substring(fullSetName.indexOf("(") + 1, fullSetName.lastIndexOf(")"));
-
+	
 	$(this).parent().siblings().find(".type1").val(altForme.types[0]);
 	$(this).parent().siblings().find(".type2").val(altForme.types[1] ? altForme.types[1] : "");
 	for (var i = 0; i < LEGACY_STATS[9].length; i++) {
@@ -938,32 +1004,49 @@ $(".forme").change(function () {
 	var chosenSet = isRandoms && gen < 8 ? pokemonSets : pokemonSets && pokemonSets[setName];
 	var greninjaSet = $(this).val().indexOf("Greninja") !== -1;
 	var isAltForme = $(this).val() !== pokemonName;
-	if (isAltForme && abilities.indexOf(altForme.abilities[0]) !== -1 && !greninjaSet) {
-		container.find(".ability").val(altForme.abilities[0]);
-	} else if (!isAltForme && abilities.indexOf(altForme.abilities[0]) !== -1 && !greninjaSet) {
-		if (chosenSet && (chosenSet.ability || chosenSet.abilities[0])) {
-			container.find(".ability").val(isRandoms ? chosenSet.abilities[0] : chosenSet.ability);
-		} else {
+
+	var species = pokedex[pokemonName];
+	var pokeName = (species.otherFormes || (species.baseSpecies && species.baseSpecies !== pokemonName)) ? container.parent().find(".forme").val() : pokemonName;
+	var isMega = (gen === 10 && pokeName.includes("-Mega"));
+	if (gen !== 10) {
+		if (isAltForme && abilities.indexOf(altForme.abilities[0]) !== -1 && !greninjaSet) {
 			container.find(".ability").val(altForme.abilities[0]);
+		} else if (!isAltForme && abilities.indexOf(altForme.abilities[0]) !== -1 && !greninjaSet) {
+			if (chosenSet && (chosenSet.ability || chosenSet.abilities[0])) {
+				container.find(".ability").val(isRandoms ? chosenSet.abilities[0] : chosenSet.ability);
+			} else {
+				container.find(".ability").val(altForme.abilities[0]);
+			}
+		} else if (greninjaSet) {
+			$(this).parent().find(".ability");
+		} else if (chosenSet) {
+			if (!isRandoms) {
+				container.find(".abilities").val(chosenSet.ability);
+			} else {
+				container.find(".ability").val(chosenSet.abilities[0]);
+			}
 		}
-	} else if (greninjaSet) {
-		$(this).parent().find(".ability");
-	} else if (chosenSet) {
-		if (!isRandoms) {
-			container.find(".abilities").val(chosenSet.ability);
+		var forcedTeraType = getForcedTeraType($(this).val());
+		if (forcedTeraType) {
+			$(this).parent().siblings().find(".teraType").val(forcedTeraType);
+		}
+		container.find(".ability").keyup();
+		if (startsWith($(this).val(), "Ogerpon-") && !startsWith($(this).val(), "Ogerpon-Teal")) {
+			container.find(".item").val($(this).val().split("-")[1] + " Mask").keyup();
 		} else {
-			container.find(".ability").val(chosenSet.abilities[0]);
+			container.find(".item").prop("disabled", false);
 		}
-	}
-	var forcedTeraType = getForcedTeraType($(this).val());
-	if (forcedTeraType) {
-		$(this).parent().siblings().find(".teraType").val(forcedTeraType);
-	}
-	container.find(".ability").keyup();
-	if (startsWith($(this).val(), "Ogerpon-") && !startsWith($(this).val(), "Ogerpon-Teal")) {
-		container.find(".item").val($(this).val().split("-")[1] + " Mask").keyup();
 	} else {
-		container.find(".item").prop("disabled", false);
+		if (!isMega) {
+			container.parent().find(".move1").find("input.move-plus").prop("checked", false);
+			container.parent().find(".move2").find("input.move-plus").prop("checked", false);
+			container.parent().find(".move3").find("input.move-plus").prop("checked", false);
+			container.parent().find(".move4").find("input.move-plus").prop("checked", false);
+		}
+		container.parent().find(".move1").find("input.move-plus").keyup();
+		container.parent().find(".move2").find("input.move-plus").keyup();
+		container.parent().find(".move3").find("input.move-plus").keyup();
+		container.parent().find(".move4").find("input.move-plus").keyup();
 	}
 });
 
@@ -1075,6 +1158,7 @@ function createPokemon(pokeInfo) {
 			var pokemonName = setName.substring(0, setName.indexOf(" ("));
 			var species = pokedex[pokemonName];
 			name = (species.otherFormes || (species.baseSpecies && species.baseSpecies !== pokemonName)) ? pokeInfo.find(".forme").val() : pokemonName;
+			name = name || pokemonName;
 		}
 
 		var baseStats = {};

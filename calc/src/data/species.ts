@@ -10936,7 +10936,11 @@ const LUMIOSE_DEX = [
 const ZA = Object.keys(SV).reduce(
   function(obj, k) {
     if (LUMIOSE_DEX.includes(k)) {
-      obj[k] = SV[k];
+      if (k === 'Greninja') { // remove Greninja-Bond
+        obj[k] = {...SV[k], otherFormes: ["Greninja-Mega"]};
+      } else {
+        obj[k] = SV[k];
+      }
     }
     return obj;
   }, 

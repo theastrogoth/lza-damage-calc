@@ -97,8 +97,7 @@ export function calculateSMSSSV(
     attacker.boosts.spa = Math.min(6, Math.max(-6, attacker.boosts.spa));
   }
 
-  // when mega evolved, all moves are plus moves (ignoring the UI)
-  move.usePlus  = move.usePlus || attacker.name.includes('-Mega');
+  move.usePlus  = move.usePlus; // || attacker.name.includes('-Mega');
 
   computeFinalStats(gen, attacker, defender, field, 'atk', 'spa');
 
@@ -996,7 +995,7 @@ export function calculateBasePowerSMSSSV(
     }
     break;
   case 'Water Shuriken':
-    basePower = attacker.named('Greninja-Ash') && attacker.hasAbility('Battle Bond') ? 20 : 15;
+    basePower = attacker.named('Greninja-Ash') && attacker.hasAbility('Battle Bond') ? 20 : move.bp;
     desc.moveBP = basePower;
     break;
   // Triple Axel's damage increases after each consecutive hit (20, 40, 60)
