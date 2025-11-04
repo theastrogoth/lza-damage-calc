@@ -4930,8 +4930,32 @@ const ZA_PATCH: {[name: string]: DeepPartial<MoveData>} = {
     category: 'Special',
     target: 'allAdjacentFoes',
   },
+  'Aqua Jet': {
+    bp: 30
+  },
+  'Bullet Punch': {
+    bp: 30
+  },
+  'Bullet Seed': {
+    bp: 15
+  },
   'Extreme Speed': {
     bp: 65
+  },
+  'Mach Punch': {
+    bp: 30
+  },
+  'Pin Missile': {
+    bp: 15
+  },
+  'Poison Sting': {
+    bp: 30
+  },
+  'Quick Attack': {
+    bp: 30
+  },
+  'Rock Blast': {
+    bp: 15
   }
 };
 
