@@ -1129,6 +1129,12 @@ function calculateAtModsSMSSSV(gen, attacker, defender, move, field, desc) {
         atMods.push(6144);
         desc.attackerItem = attacker.item;
     }
+    if ((field.attackerSide.isRedItem && !move.named('Body Press') && !move.named('Foul Play')) ||
+        (field.defenderSide.isRedItem && move.named('Foul Play')) ||
+        (field.attackerSide.isBlueItem) && move.named('Body Press')) {
+        atMods.push(6144);
+        desc.isAtkItemBoosted = true;
+    }
     return atMods;
 }
 exports.calculateAtModsSMSSSV = calculateAtModsSMSSSV;
@@ -1235,7 +1241,7 @@ function calculateDfModsSMSSSV(gen, attacker, defender, move, field, desc, isCri
         desc.defenderItem = defender.item;
     }
     if (field.defenderSide.isBlueItem) {
-        dfMods.push(5325);
+        dfMods.push(6144);
         desc.isDefItemBoosted = true;
     }
     return dfMods;
@@ -1353,12 +1359,6 @@ function calculateFinalModsSMSSSV(gen, attacker, defender, move, field, desc, is
             finalMods.push(8192);
         }
         desc.attackerItem = attacker.item;
-    }
-    if ((field.attackerSide.isRedItem && !move.named('Body Press') && !move.named('Foul Play')) ||
-        (field.defenderSide.isRedItem && move.named('Foul Play')) ||
-        (field.attackerSide.isBlueItem) && move.named('Body Press')) {
-        finalMods.push(5325);
-        desc.isAtkItemBoosted = true;
     }
     if (defender.name.includes('-Mega') && typeEffectiveness > 2) {
         finalMods.push(2703);
