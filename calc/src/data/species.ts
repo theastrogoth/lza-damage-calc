@@ -10889,6 +10889,7 @@ const LUMIOSE_DEX = [
   'Aron',
   'Lairon',
   'Aggron',
+  'Aggron-Mega',
   'Helioptile',
   'Heliolisk',
   'Pumpkaboo',
