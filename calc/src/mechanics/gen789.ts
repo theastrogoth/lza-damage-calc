@@ -1543,6 +1543,15 @@ export function calculateAtModsSMSSSV(
     atMods.push(6144);
     desc.attackerItem = attacker.item;
   }
+
+  // 50% boost from Red Item (guessing)
+  if ((field.attackerSide.isRedItem && !move.named('Body Press') && !move.named('Foul Play')) ||
+    (field.defenderSide.isRedItem && move.named('Foul Play')) || // impossible, move not in ZA
+    (field.attackerSide.isBlueItem) && move.named('Body Press') // impossible, move not in ZA
+  ) {
+    atMods.push(6144);
+    desc.isAtkItemBoosted = true;
+  }
   return atMods;
 }
 
@@ -1684,9 +1693,9 @@ export function calculateDfModsSMSSSV(
     desc.defenderItem = defender.item;
   }
 
-  // from DamagePerMegaAura (guessing)
+  // 50% mod from Blue Item (guessing)
   if (field.defenderSide.isBlueItem) {
-    dfMods.push(5325); 
+    dfMods.push(6144); 
     desc.isDefItemBoosted = true;
   }
 
@@ -1842,15 +1851,6 @@ export function calculateFinalModsSMSSSV(
       finalMods.push(8192);
     }
     desc.attackerItem = attacker.item;
-  }
-
-  // from DamagePerMegaAura (guessing)
-  if ((field.attackerSide.isRedItem && !move.named('Body Press') && !move.named('Foul Play')) ||
-    (field.defenderSide.isRedItem && move.named('Foul Play')) || // impossible, move not in game
-    (field.attackerSide.isBlueItem) && move.named('Body Press') // impossible, move not in game
-  ) {
-    finalMods.push(5325);
-    desc.isAtkItemBoosted = true;
   }
 
   // from DamagePerMegatypeAff (guessing)
