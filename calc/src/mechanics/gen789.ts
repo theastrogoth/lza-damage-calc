@@ -1544,12 +1544,12 @@ export function calculateAtModsSMSSSV(
     desc.attackerItem = attacker.item;
   }
 
-  // 50% boost from Red Item (guessing)
+  // 2x mod from Red Item
   if ((field.attackerSide.isRedItem && !move.named('Body Press') && !move.named('Foul Play')) ||
     (field.defenderSide.isRedItem && move.named('Foul Play')) || // impossible, move not in ZA
     (field.attackerSide.isBlueItem) && move.named('Body Press') // impossible, move not in ZA
   ) {
-    atMods.push(6144);
+    atMods.push(8192);
     desc.isAtkItemBoosted = true;
   }
   return atMods;
@@ -1693,9 +1693,9 @@ export function calculateDfModsSMSSSV(
     desc.defenderItem = defender.item;
   }
 
-  // 50% mod from Blue Item (guessing)
+  // 2x mod from Blue Item
   if (field.defenderSide.isBlueItem) {
-    dfMods.push(6144); 
+    dfMods.push(8192); 
     desc.isDefItemBoosted = true;
   }
 
