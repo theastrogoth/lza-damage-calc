@@ -1132,7 +1132,7 @@ function calculateAtModsSMSSSV(gen, attacker, defender, move, field, desc) {
     if ((field.attackerSide.isRedItem && !move.named('Body Press') && !move.named('Foul Play')) ||
         (field.defenderSide.isRedItem && move.named('Foul Play')) ||
         (field.attackerSide.isBlueItem) && move.named('Body Press')) {
-        atMods.push(6144);
+        atMods.push(8192);
         desc.isAtkItemBoosted = true;
     }
     return atMods;
@@ -1241,7 +1241,7 @@ function calculateDfModsSMSSSV(gen, attacker, defender, move, field, desc, isCri
         desc.defenderItem = defender.item;
     }
     if (field.defenderSide.isBlueItem) {
-        dfMods.push(6144);
+        dfMods.push(8192);
         desc.isDefItemBoosted = true;
     }
     return dfMods;
