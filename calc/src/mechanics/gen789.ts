@@ -1853,10 +1853,10 @@ export function calculateFinalModsSMSSSV(
     desc.attackerItem = attacker.item;
   }
 
-  // from DamagePerMegatypeAff (guessing)
-  if (defender.name.includes('-Mega') && typeEffectiveness > 2) {
-    finalMods.push(2703);
-  }
+  // // from DamagePerMegatypeAff (needs in-game testing)
+  // if (defender.name.includes('-Mega') && typeEffectiveness > 2) {
+  //   finalMods.push(2703);
+  // }
 
   if (move.hasType(getBerryResistType(defender.item)) &&
       (typeEffectiveness > 1 || move.hasType('Normal')) &&
