@@ -1360,9 +1360,6 @@ function calculateFinalModsSMSSSV(gen, attacker, defender, move, field, desc, is
         }
         desc.attackerItem = attacker.item;
     }
-    if (defender.name.includes('-Mega') && typeEffectiveness > 2) {
-        finalMods.push(2703);
-    }
     if (move.hasType((0, items_1.getBerryResistType)(defender.item)) &&
         (typeEffectiveness > 1 || move.hasType('Normal')) &&
         hitCount === 0 &&
