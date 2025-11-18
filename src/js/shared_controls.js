@@ -681,7 +681,9 @@ $(".set-selector").change(function () {
 		pokeObj.find(".max").prop("checked", false);
 		stellarButtonsVisibility(pokeObj, 0);
 		pokeObj.find(".boostedStat").val("");
-		pokeObj.find(".analysis").attr("href", smogonAnalysis(pokemonName));
+		if (gen !== 10) {
+			pokeObj.find(".analysis").attr("href", smogonAnalysis(pokemonName));
+		}
 		pokeObj.find(".type1").val(pokemon.types[0]);
 		pokeObj.find(".type2").val(pokemon.types[1]);
 		pokeObj.find(".hp .base").val(pokemon.bs.hp);
