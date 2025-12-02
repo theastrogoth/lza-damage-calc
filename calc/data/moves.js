@@ -4947,7 +4947,7 @@ var ZA_PATCH = {
     }
 };
 var SV = (0, util_1.extend)(true, {}, SS, SV_PATCH, ZA_PATCH);
-var ZA_MOVES = [
+var ZA_MOVE_NAMES = [
     '(No Move)',
     'Absorb',
     'Acid Armor',
@@ -5197,13 +5197,13 @@ var ZA_MOVES = [
     'Zap Cannon',
     'Zen Headbutt'
 ];
-var ZA = Object.keys(SV).reduce(function (obj, k) {
-    if (ZA_MOVES.includes(k)) {
+exports.ZA_MOVES = Object.keys(SV).reduce(function (obj, k) {
+    if (ZA_MOVE_NAMES.includes(k)) {
         obj[k] = SV[k];
     }
     return obj;
 }, {});
-exports.MOVES = [{}, RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV, ZA];
+exports.MOVES = [{}, RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV, SV];
 var Moves = (function () {
     function Moves(gen) {
         this.gen = gen;

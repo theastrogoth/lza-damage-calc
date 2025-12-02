@@ -19,6 +19,9 @@ export interface SpeciesData {
         0: string;
     };
 }
+export declare const ZA_SPECIES: {
+    [name: string]: SpeciesData;
+};
 export declare const SPECIES: {
     [name: string]: SpeciesData;
 }[];

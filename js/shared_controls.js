@@ -106,6 +106,7 @@ $("input:radio[name='format']").change(function () {
 
 var defaultLevel = 50;
 $("input:radio[name='defaultLevel']").change(function () {
+	console.log($("input:radio[name='defaultLevel']:checked").val(), defaultLevel)
 	defaultLevel = $("input:radio[name='defaultLevel']:checked").val();
 	$("#levelL1").val(defaultLevel);
 	$("#levelR1").val(defaultLevel);
@@ -748,7 +749,7 @@ $(".set-selector").change(function () {
 			if (regSets) {
 				pokeObj.find(".teraType").val(set.teraType || getForcedTeraType(pokemonName) || pokemon.types[0]);
 			}
-			pokeObj.find(".level").val(set.level === undefined ? defaultLevel || 100 : set.level);
+			pokeObj.find(".level").val(set.level === undefined ? defaultLevel || 50 : set.level);
 			for (i = 0; i < LEGACY_STATS[gen].length; i++) {
 				var stat = $("#randoms").prop("checked") ? legacyStatToStat(LEGACY_STATS[gen][i]) : LEGACY_STATS[gen][i];
 				pokeObj.find("." + LEGACY_STATS[gen][i] + " .evs").val(
@@ -1538,13 +1539,14 @@ $(".gen").change(function () {
 	genWasChanged = true;
 	/* eslint-enable */
 	// declaring these variables with var here makes z moves not work; TODO
-	pokedex = calc.SPECIES[gen];
+	var filter = gen === 10 && $("input:checkbox[name='filter']:checked").val();
+	pokedex = filter ? calc.ZA_SPECIES : calc.SPECIES[gen];
 	setdex = SETDEX[gen];
 	randdex = RANDDEX[gen];
 	if ('Aegislash' in randdex) randdex['Aegislash-Shield'] = randdex['Aegislash'];
 	typeChart = calc.TYPE_CHART[gen];
-	moves = calc.MOVES[gen];
-	items = calc.ITEMS[gen];
+	moves = filter ? calc.ZA_MOVES : calc.MOVES[gen];
+	items = filter ? calc.ZA_ITEMS : calc.ITEMS[gen];
 	abilities = calc.ABILITIES[gen];
 	clearField();
 	$("#importedSets").prop("checked", false);
@@ -1566,6 +1568,17 @@ $(".gen").change(function () {
 	$(".set-selector").val(getFirstValidSetOption().id);
 	$(".set-selector").change();
 });
+
+$("input:checkbox[name='filter']").change(function () {
+	var filter = gen === 10 && $("input:checkbox[name='filter']:checked").val();
+	pokedex = filter ? calc.ZA_SPECIES : calc.SPECIES[gen];
+	moves = filter ? calc.ZA_MOVES : calc.MOVES[gen];
+	items = filter ? calc.ZA_ITEMS : calc.ITEMS[gen];
+	var moveOptions = getSelectOptions(Object.keys(moves), true);
+	$("select.move-selector").find("option").remove().end().append(moveOptions);
+	var itemOptions = getSelectOptions(items, true);
+	$("select.item").find("option").remove().end().append("<option value=\"\">(none)</option>" + itemOptions);
+})
 
 function getFirstValidSetOption() {
 	var sets = getSetOptions();
@@ -1919,8 +1932,8 @@ $(document).ready(function () {
 	$("#percentage").change();
 	$("#singles-format").prop("checked", true);
 	$("#singles-format").change();
-	$("#default-level-100").prop("checked", true);
-	$("#default-level-100").change();
+	$("#default-level-50").prop("checked", true);
+	$("#default-level-50").change();
 	loadDefaultLists();
 	$(".move-selector").select2({
 		dropdownAutoWidth: true,

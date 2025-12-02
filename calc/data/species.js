@@ -10951,9 +10951,14 @@ var LUMIOSE_DEX = [
     'Zygarde',
     'Zygarde-10%',
     'Zygarde-Complete',
-    'Zygarde-Mega'
+    'Zygarde-Mega',
+    'Diancie',
+    'Diancie-Mega',
+    'Mewtwo',
+    'Mewtwo-Mega-X',
+    'Mewtwo-Mega-Y'
 ];
-var ZA = Object.keys(SV).reduce(function (obj, k) {
+exports.ZA_SPECIES = Object.keys(SV).reduce(function (obj, k) {
     if (LUMIOSE_DEX.includes(k)) {
         if (k === 'Greninja') {
             obj[k] = __assign(__assign({}, SV[k]), { otherFormes: ["Greninja-Mega"] });
@@ -10964,7 +10969,7 @@ var ZA = Object.keys(SV).reduce(function (obj, k) {
     }
     return obj;
 }, {});
-exports.SPECIES = [{}, RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV, ZA];
+exports.SPECIES = [{}, RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV, SV];
 var Species = (function () {
     function Species(gen) {
         this.gen = gen;

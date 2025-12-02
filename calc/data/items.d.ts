@@ -4,6 +4,7 @@ export declare const MEGA_STONES: {
 } & {
     [species: string]: string;
 };
+export declare const ZA_ITEM_NAMES: string[];
 export declare const ZA_ITEMS: string[];
 export declare const ITEMS: string[][];
 export declare class Items implements I.Items {

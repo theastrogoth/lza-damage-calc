@@ -35,6 +35,9 @@ export interface MoveData {
     readonly isSlicing?: boolean;
     readonly isWind?: boolean;
 }
+export declare const ZA_MOVES: {
+    [name: string]: MoveData;
+};
 export declare const MOVES: {
     [name: string]: MoveData;
 }[];

@@ -648,7 +648,7 @@ var BERRIES = {
     'Yache Berry': { t: 'Ice', p: 80 }
 };
 exports.MEGA_STONES = Object.assign({}, GEN_6_MEGA_STONES, ZA_MEGA_STONES);
-exports.ZA_ITEMS = [
+exports.ZA_ITEM_NAMES = [
     "Dive Ball",
     "Dusk Ball",
     "Fast Ball",
@@ -705,6 +705,7 @@ exports.ZA_ITEMS = [
     "Chesnaughtite",
     "Clefablite",
     "Delphoxite",
+    "Diancite",
     "Dragalgite",
     "Dragoninite",
     "Drampanite",
@@ -734,6 +735,8 @@ exports.ZA_ITEMS = [
     "Medichamite",
     "Meganiumite",
     "Metagrossite",
+    "Mewtwonite X",
+    "Mewtwonite Y",
     "Pidgeotite",
     "Pinsirite",
     "Pyroarite",
@@ -899,13 +902,13 @@ exports.ZA_ITEMS = [
     "Timid Mint",
     "Zinc"
 ];
-var ZA = Object.values(SV).reduce(function (arr, k) {
-    if (exports.ZA_ITEMS.includes(k)) {
+exports.ZA_ITEMS = Object.values(SV).reduce(function (arr, k) {
+    if (exports.ZA_ITEM_NAMES.includes(k)) {
         arr.push(k);
     }
     return arr;
 }, []);
-exports.ITEMS = [[], RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV, ZA];
+exports.ITEMS = [[], RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV, SV];
 var Items = (function () {
     function Items(gen) {
         this.gen = gen;
