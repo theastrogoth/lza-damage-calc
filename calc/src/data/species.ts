@@ -10931,10 +10931,15 @@ const LUMIOSE_DEX = [
   'Zygarde',
   'Zygarde-10%', 
   'Zygarde-Complete',
-  'Zygarde-Mega'
+  'Zygarde-Mega',
+  'Diancie',
+  'Diancie-Mega',
+  'Mewtwo',
+  'Mewtwo-Mega-X',
+  'Mewtwo-Mega-Y'
 ]
 
-const ZA = Object.keys(SV).reduce(
+export const ZA_SPECIES = Object.keys(SV).reduce(
   function(obj, k) {
     if (LUMIOSE_DEX.includes(k)) {
       if (k === 'Greninja') { // remove Greninja-Bond
@@ -10947,7 +10952,7 @@ const ZA = Object.keys(SV).reduce(
   }, 
 {} as {[name: string]: SpeciesData});
 
-export const SPECIES = [{}, RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV, ZA]; // ZA will be accessed as 'gen 10' even though this isn't really accurate
+export const SPECIES = [{}, RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV, SV]; // ZA will be accessed as 'gen 10' even though this isn't really accurate
 
 export class Species implements I.Species {
   private readonly gen: I.GenerationNum;

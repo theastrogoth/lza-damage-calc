@@ -608,7 +608,7 @@ const BERRIES: {[berry: string]: {t: I.TypeName; p: number}} = {
 
 export const MEGA_STONES = Object.assign({}, GEN_6_MEGA_STONES, ZA_MEGA_STONES);
 
-export const ZA_ITEMS = [
+export const ZA_ITEM_NAMES = [
   "Dive Ball",
   "Dusk Ball",
   "Fast Ball",
@@ -665,6 +665,7 @@ export const ZA_ITEMS = [
   "Chesnaughtite",
   "Clefablite",
   "Delphoxite",
+  "Diancite",
   "Dragalgite",
   "Dragoninite",
   "Drampanite",
@@ -694,6 +695,8 @@ export const ZA_ITEMS = [
   "Medichamite",
   "Meganiumite",
   "Metagrossite",
+  "Mewtwonite X",
+  "Mewtwonite Y",
   "Pidgeotite",
   "Pinsirite",
   "Pyroarite",
@@ -860,16 +863,16 @@ export const ZA_ITEMS = [
   "Zinc"
 ]
 
-const ZA = Object.values(SV).reduce(
+export const ZA_ITEMS = Object.values(SV).reduce(
   function(arr, k) {
-    if (ZA_ITEMS.includes(k)) {
+    if (ZA_ITEM_NAMES.includes(k)) {
       arr.push(k);
     }
     return arr;
   }, 
 [] as string[]);
 
-export const ITEMS = [[], RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV, ZA]; // ZA will be accessed as 'gen 10' even though this isn't really accurate
+export const ITEMS = [[], RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV, SV]; // ZA will be accessed as 'gen 10' even though this isn't really accurate
 
 export class Items implements I.Items {
   private readonly gen: I.GenerationNum;

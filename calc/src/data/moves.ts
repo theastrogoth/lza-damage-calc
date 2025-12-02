@@ -4961,7 +4961,7 @@ const ZA_PATCH: {[name: string]: DeepPartial<MoveData>} = {
 
 const SV: {[name: string]: MoveData} = extend(true, {}, SS, SV_PATCH, ZA_PATCH);
 
-const ZA_MOVES = [
+const ZA_MOVE_NAMES = [
   '(No Move)',
   'Absorb',
   'Acid Armor',
@@ -5212,16 +5212,16 @@ const ZA_MOVES = [
   'Zen Headbutt'
 ]
 
-const ZA = Object.keys(SV).reduce(
+export const ZA_MOVES = Object.keys(SV).reduce(
   function(obj, k) {
-    if (ZA_MOVES.includes(k)) {
+    if (ZA_MOVE_NAMES.includes(k)) {
       obj[k] = SV[k];
     }
     return obj;
   }, 
 {} as {[name: string]: MoveData});
 
-export const MOVES = [{}, RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV, ZA]; // ZA will be accessed as 'gen 10' even though this isn't really accurate
+export const MOVES = [{}, RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV, SV]; // ZA will be accessed as 'gen 10' even though this isn't really accurate
 
 export class Moves implements I.Moves {
   private readonly gen: I.GenerationNum;
