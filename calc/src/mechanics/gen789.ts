@@ -41,6 +41,7 @@ import {
   getShellSideArmCategory,
   getWeight,
   handleFixedDamageMoves,
+  handleProportionalDamageMoves,
   isGrounded,
   OF16, OF32,
   pokeRound,
@@ -96,6 +97,8 @@ export function calculateSMSSSV(
     attacker.boosts.spa = Math.min(6, Math.max(-6, attacker.boosts.spa));
   }
 
+  move.usePlus  = move.usePlus; // || attacker.name.includes('-Mega');
+
   computeFinalStats(gen, attacker, defender, field, 'atk', 'spa');
 
   checkInfiltrator(attacker, field.defenderSide);
@@ -144,7 +147,7 @@ export function calculateSMSSSV(
   const breaksProtect = move.breaksProtect || move.isZ || attacker.isDynamaxed ||
   (attacker.hasAbility('Unseen Fist') && move.flags.contact);
 
-  if (field.defenderSide.isProtected && !breaksProtect) {
+  if (field.defenderSide.isProtected && !breaksProtect && !move.usePlus) { // TODO: damage from plus moves through protect
     desc.isProtected = true;
     return result;
   }
@@ -399,6 +402,12 @@ export function calculateSMSSSV(
     )
     : 1;
   let typeEffectiveness = type1Effectiveness * type2Effectiveness;
+  // from DamagePerTypeAff
+  // changed resist multipliers in ZA
+  if (gen.num === 10) { 
+    if (typeEffectiveness == 0.5) { typeEffectiveness = 0.6; }
+    if (typeEffectiveness == 0.25) { typeEffectiveness = 0.3; }
+  }
 
   if (defender.teraType && defender.teraType !== 'Stellar') {
     typeEffectiveness = getMoveEffectiveness(
@@ -516,8 +525,22 @@ export function calculateSMSSSV(
       desc.attackerAbility = attacker.ability;
     } else {
       result.damage = fixedDamage;
+      // 0.7x multiplier for ZA
+      if (gen.num === 10) {
+        result.damage = Math.floor(OF32(result.damage * 0.7));
+      }
     }
     return result;
+  }
+
+  const proportionalDamage = handleProportionalDamageMoves(defender, move);
+  if (proportionalDamage) {
+    result.damage = proportionalDamage;
+    // 0.7x multiplier for ZA
+    if (gen.num === 10) {
+      result.damage = Math.floor(OF32(result.damage * 0.7));
+    }
+    return result
   }
 
   if (move.named('Final Gambit')) {
@@ -670,6 +693,17 @@ export function calculateSMSSSV(
   for (let i = 0; i < 16; i++) {
     damage[i] =
       getFinalDamage(baseDamage, i, typeEffectiveness, applyBurn, stabMod, finalMod, protect);
+    if (gen.num === 10) { // ZA multipliers
+      // from DamagePerTrainerBattle, DamagePerWildBattle
+      // across-the-board 0.7x multiplier 
+      damage[i] = Math.floor(OF32(damage[i] * 0.7));
+      // from DamagePerTypeAffPlus
+      // plus moves give have a 1.3x multiplier for super effective moves and 1.2x otherwise, TODO: Protect damage
+      if (move.usePlus) {
+        damage[i] = Math.floor(OF32(damage[i] * (typeEffectiveness > 1 ? 1.3 : 1.2)));
+        desc.isPlus = true;
+      }
+    }
   }
   result.damage = childDamage ? [damage, childDamage] : damage;
 
@@ -748,7 +782,7 @@ export function calculateSMSSSV(
 
       const damageArray = [];
       for (let i = 0; i < 16; i++) {
-        const newFinalDamage = getFinalDamage(
+        let newFinalDamage = getFinalDamage(
           newBaseDamage,
           i,
           typeEffectiveness,
@@ -757,6 +791,13 @@ export function calculateSMSSSV(
           newFinalMod,
           protect
         );
+        if (gen.num === 10) { // ZA multipliers
+          newFinalDamage = Math.floor(OF32(newFinalDamage * 0.7));
+          if (move.usePlus) {
+            newFinalDamage = Math.floor(OF32(newFinalDamage * (typeEffectiveness > 1 ? 1.3 : 1.2)));
+            desc.isPlus = true;
+          }
+        }
         damageArray[i] = newFinalDamage;
       }
       damageMatrix[times] = damageArray;
@@ -954,7 +995,7 @@ export function calculateBasePowerSMSSSV(
     }
     break;
   case 'Water Shuriken':
-    basePower = attacker.named('Greninja-Ash') && attacker.hasAbility('Battle Bond') ? 20 : 15;
+    basePower = attacker.named('Greninja-Ash') && attacker.hasAbility('Battle Bond') ? 20 : move.bp;
     desc.moveBP = basePower;
     break;
   // Triple Axel's damage increases after each consecutive hit (20, 40, 60)
@@ -1428,6 +1469,14 @@ export function calculateAtModsSMSSSV(
     desc.isSteelySpiritAttacker = true;
   }
 
+  if (
+    field.attackerSide.isCharged &&
+    move.hasType('Electric')
+  ) {
+    atMods.push!(8192);
+    desc.isCharged = true;
+  }
+
   if ((defender.hasAbility('Thick Fat') && move.hasType('Fire', 'Ice')) ||
       (defender.hasAbility('Water Bubble') && move.hasType('Fire')) ||
      (defender.hasAbility('Purifying Salt') && move.hasType('Ghost'))) {
@@ -1493,6 +1542,15 @@ export function calculateAtModsSMSSSV(
   ) {
     atMods.push(6144);
     desc.attackerItem = attacker.item;
+  }
+
+  // 2x mod from Red Item
+  if ((field.attackerSide.isRedItem && !move.named('Body Press') && !move.named('Foul Play')) ||
+    (field.defenderSide.isRedItem && move.named('Foul Play')) || // impossible, move not in ZA
+    (field.attackerSide.isBlueItem) && move.named('Body Press') // impossible, move not in ZA
+  ) {
+    atMods.push(8192);
+    desc.isAtkItemBoosted = true;
   }
   return atMods;
 }
@@ -1634,6 +1692,13 @@ export function calculateDfModsSMSSSV(
     dfMods.push(8192);
     desc.defenderItem = defender.item;
   }
+
+  // 2x mod from Blue Item
+  if (field.defenderSide.isBlueItem) {
+    dfMods.push(8192); 
+    desc.isDefItemBoosted = true;
+  }
+
   return dfMods;
 }
 
@@ -1702,21 +1767,22 @@ export function calculateFinalModsSMSSSV(
 ) {
   const finalMods = [];
 
+  // screens modof 66% from ReflectorDamagecutRatio
   if (field.defenderSide.isReflect && move.category === 'Physical' &&
       !isCritical && !field.defenderSide.isAuroraVeil) {
     // doesn't stack with Aurora Veil
-    finalMods.push(field.gameType !== 'Singles' ? 2732 : 2048);
+    finalMods.push(gen.num === 10 ? 2703 : field.gameType !== 'Singles' ? 2732 : 2048);
     desc.isReflect = true;
   } else if (
     field.defenderSide.isLightScreen && move.category === 'Special' &&
     !isCritical && !field.defenderSide.isAuroraVeil
   ) {
     // doesn't stack with Aurora Veil
-    finalMods.push(field.gameType !== 'Singles' ? 2732 : 2048);
+    finalMods.push(gen.num === 10 ? 2703 : field.gameType !== 'Singles' ? 2732 : 2048);
     desc.isLightScreen = true;
   }
   if (field.defenderSide.isAuroraVeil && !isCritical) {
-    finalMods.push(field.gameType !== 'Singles' ? 2732 : 2048);
+    finalMods.push(gen.num === 10 ? 2703 : field.gameType !== 'Singles' ? 2732 : 2048);
     desc.isAuroraVeil = true;
   }
 
@@ -1786,6 +1852,11 @@ export function calculateFinalModsSMSSSV(
     }
     desc.attackerItem = attacker.item;
   }
+
+  // // from DamagePerMegatypeAff (needs in-game testing)
+  // if (defender.name.includes('-Mega') && typeEffectiveness > 2) {
+  //   finalMods.push(2703);
+  // }
 
   if (move.hasType(getBerryResistType(defender.item)) &&
       (typeEffectiveness > 1 || move.hasType('Normal')) &&

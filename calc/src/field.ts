@@ -87,6 +87,7 @@ export class Side implements State.Side {
   isForesight: boolean;
   isTailwind: boolean;
   isHelpingHand: boolean;
+  isCharged: boolean;
   isFlowerGift: boolean;
   isPowerTrick?: boolean;
   isFriendGuard: boolean;
@@ -95,6 +96,8 @@ export class Side implements State.Side {
   isPowerSpot: boolean;
   isSteelySpirit: boolean;
   isSwitching?: 'out' | 'in';
+  isRedItem?: boolean;
+  isBlueItem?: boolean;
 
   constructor(side: State.Side = {}) {
     this.spikes = side.spikes || 0;
@@ -112,6 +115,7 @@ export class Side implements State.Side {
     this.isForesight = !!side.isForesight;
     this.isTailwind = !!side.isTailwind;
     this.isHelpingHand = !!side.isHelpingHand;
+    this.isCharged = !!side.isCharged;
     this.isFlowerGift = !!side.isFlowerGift;
     this.isPowerTrick = !!side.isPowerTrick;
     this.isFriendGuard = !!side.isFriendGuard;
@@ -120,6 +124,8 @@ export class Side implements State.Side {
     this.isPowerSpot = !!side.isPowerSpot;
     this.isSteelySpirit = !!side.isSteelySpirit;
     this.isSwitching = side.isSwitching;
+    this.isRedItem = !!side.isRedItem;
+    this.isBlueItem = !!side.isBlueItem;
   }
 
   clone() {

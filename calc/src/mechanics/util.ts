@@ -663,6 +663,13 @@ export function handleFixedDamageMoves(attacker: Pokemon, move: Move) {
   return 0;
 }
 
+export function handleProportionalDamageMoves(defender: Pokemon, move: Move) {
+  if (move.named('Super Fang', 'Nature\s Madness', 'Ruination')) {
+    return Math.floor(defender.curHP()/2);
+  }
+  return 0;
+}
+
 // Game Freak rounds DOWN on .5
 export function pokeRound(num: number) {
   return num % 1 > 0.5 ? Math.ceil(num) : Math.floor(num);
