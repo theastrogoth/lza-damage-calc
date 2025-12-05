@@ -181,6 +181,9 @@ function getMoveEffectiveness(gen, move, type, isGhostRevealed, isGravity, isRin
     else if (move.named('Freeze-Dry') && type === 'Water') {
         return 2;
     }
+    else if (move.named('Nihil Light') && type === 'Fairy') {
+        return 1;
+    }
     else {
         var effectiveness = gen.types.get((0, util_1.toID)(move.type)).effectiveness[type];
         if (effectiveness === 0 && isRingTarget) {

@@ -4913,7 +4913,7 @@ var SV_PATCH = {
 };
 var ZA_PATCH = {
     'Nihil Light': {
-        bp: 100,
+        bp: 200,
         type: 'Dragon',
         category: 'Special',
         target: 'allAdjacentFoes'

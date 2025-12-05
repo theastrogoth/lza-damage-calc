@@ -297,9 +297,6 @@ function calculateSMSSSV(gen, attacker, defender, move, field) {
     if (typeEffectiveness === 0 && move.named('Nihil Light')) {
         typeEffectiveness = 1;
     }
-    if (typeEffectiveness === 0) {
-        return result;
-    }
     if ((move.named('Sky Drop') &&
         (defender.hasType('Flying') || defender.weightkg >= 200 || field.isGravity)) ||
         (move.named('Synchronoise') && !defender.hasType(attacker.types[0]) &&
